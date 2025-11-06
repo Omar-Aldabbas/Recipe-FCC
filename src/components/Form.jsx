@@ -14,7 +14,8 @@ export const Form = () => {
     e.target.reset();
   };
   return (
-    <form
+    <>
+        <form
       action=""
       onSubmit={handleSubmit}
       className="flex justify-center flex-wrap items-center gap-3 py-8 px-2 min-w-screen mt-6"
@@ -30,5 +31,11 @@ export const Form = () => {
         + Add Ingredient
       </button>
     </form>
+    <ul>
+        {ingredients.map((ing, i) => (
+            <li key={ing + i}>{ing}</li>
+        ))}
+    </ul>
+    </>
   );
 };
