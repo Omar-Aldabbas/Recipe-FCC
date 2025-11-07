@@ -6,9 +6,12 @@ export const Form = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-
+    
     const ingredient = formData.get("ingredient").trim();
     if (!ingredient) return;
+    console.log(formData.getAll('ingredient'))
+
+
 
     setIngredients((prev) => [...prev, ingredient]);
     e.target.reset();
