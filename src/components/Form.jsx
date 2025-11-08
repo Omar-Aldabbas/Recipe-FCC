@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { Recipe } from "./Recipe";
 
 export const Form = () => {
   const [ingredients, setIngredients] = useState([]);
+  const [recipeShowen, setRecipeShowen] = useState(false);
 
   const addIngredient = (formData) => {
     const ingredient = formData.get("ingredient");
@@ -9,23 +11,11 @@ export const Form = () => {
     setIngredients((prev) => [...prev, ingredient]);
   };
 
-  //   const handleSubmit = (e) => {
-  //     e.preventDefault();
-  //     const formData = new FormData(e.currentTarget);
-
-  //     const ingredient = formData.get("ingredient").trim();
-  //     if (!ingredient) return;
-  //     console.log(formData.getAll("ingredient"));
-
-  //     setIngredients((prev) => [...prev, ingredient]);
-  //     e.target.reset();
-  //   };
 
   return (
     <div className="container mx-auto p-6 flex flex-col items-center">
       <form
         action={addIngredient}
-        // onSubmit={handleSubmit}
         className="flex flex-wrap justify-center items-center gap-4 py-8 px-4 w-full md:w-3/4 bg-white/60 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200"
       >
         <input
@@ -34,6 +24,7 @@ export const Form = () => {
           aria-label="Add Ingredient"
           placeholder="e.g. oregano"
           className="rounded-lg border border-gray-300 text-md p-3 flex-grow md:flex-none md:w-2/3 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all duration-200"
+          required
         />
         <button className="rounded-lg bg-blue-950 text-white font-semibold px-8 py-3 text-md hover:bg-blue-900 hover:scale-105 shadow-md transition-all duration-200">
           + Add Ingredient
@@ -57,21 +48,25 @@ export const Form = () => {
             ))}
           </ul>
 
-          <div className="flex flex-col md:flex-row justify-between items-center mt-10 bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-md text-center md:text-left">
-            <div>
-              <h3 className="text-2xl font-semibold text-blue-950 mb-2">
-                Ready for a recipe?
-              </h3>
-              <p className="text-slate-700">
-                Generate a delicious recipe from your list of ingredients 🍳
-              </p>
+          {ingredients.length > 3 && (
+            <div className="flex flex-col md:flex-row justify-between items-center mt-10 bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-md text-center md:text-left">
+              <div>
+                <h3 className="text-2xl font-semibold text-blue-950 mb-2">
+                  Ready for a recipe?
+                </h3>
+                <p className="text-slate-700">
+                  Generate a delicious recipe from your list of ingredients 🍳
+                </p>
+              </div>
+              <button onClick={() => setRecipeShowen(prev => !prev)} className="mt-4 md:mt-0 bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-blue-800 hover:scale-105 transition-all duration-200">
+                Get a Recipe
+              </button>
             </div>
-            <button className="mt-4 md:mt-0 bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-blue-800 hover:scale-105 transition-all duration-200">
-              Get a Recipe
-            </button>
-          </div>
+          )}
         </section>
       )}
+
+      {recipeShowen && <Recipe/>}
     </div>
   );
 };
