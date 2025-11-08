@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Recipe } from "./Recipe";
 import { RecipeReady } from "./RecipeReady";
 import { IngredientsList } from "./IngredientsList";
-import { getRecipeFromMistral } from "../api/huggingface";
+import { getRecipeFromOpenAI } from "../api/openai";
 
 export const Main = () => {
   const [ingredients, setIngredients] = useState([]);
@@ -10,10 +10,16 @@ export const Main = () => {
 
   const [recipe, setRecipe] = useState('')
 
-  const getRecipe = () => {
-    const data = getRecipeFromMistral(ingredients)
-    setRecipe(data)
+const getRecipe = async () => {
+  try {
+    const data = await getRecipeFromOpenAI(ingredients);
+    setRecipe(data);
+    setRecipeShowen(true);
+  } catch (err) {
+    console.error(err);
   }
+};
+
 
   const addIngredient = (formData) => {
     const ingredient = formData.get("ingredient");

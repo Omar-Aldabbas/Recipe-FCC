@@ -1,6 +1,6 @@
-import { HfInference } from "@huggingface/inference";
+import OpenAI from "openai";
 
-const HF_TOKEN = import.meta.env.VITE_HF_RECIPE_TOKEN;
+const OAI_TOKEN = import.meta.env.VITE_OAI_RECIPE_TOKEN;
 
 const SYSTEM_PROMPT = `
 You are an assistant that receives a list of ingredients that a user has and
@@ -11,23 +11,27 @@ too many extra ingredients and if some ingredient are not valid say that you don
 easier to render to a web page.
 `;
 
-const hf = new HfInference(HF_TOKEN);
+const client = new OpenAI({
+  apiKey: OAI_TOKEN,
+  dangerouslyAllowBrowser: true
+});
 
-export async function getRecipeFromMistral(ingredientsArr) {
-  const ingredientsStr = ingredientsArr.join(" ");
+export async function getRecipeFromOpenAI(ingredientsArr) {
+  const ingredientsStr = ingredientsArr.join(", ");
 
   try {
-    const response = await hf.chatCompletion({
-      model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
+    const response = await client.chat.completions.create({
+      model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: `I have ${ingredientsStr}. Please give me a recipe you'd recommend I make!` }
+        { role: "user", content: `I have ${ingredientsStr}. Suggest a recipe.` }
       ],
       max_tokens: 1024
     });
 
     return response.choices[0].message.content;
   } catch (err) {
-    console.log(err.message);
+    console.error("OpenAI error:", err.message);
+    return null;
   }
 }
