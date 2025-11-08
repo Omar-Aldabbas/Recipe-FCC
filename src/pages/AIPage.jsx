@@ -1,7 +1,5 @@
-import { Count } from "../components/Count";
-import { Form } from "../components/Form";
+import { Main } from "../components/Main";
 import { Logo } from "../components/Logo";
-import {Pads} from "../components/PadsGrid";
 
 export const AIPage = () => {
   return (
@@ -10,10 +8,8 @@ export const AIPage = () => {
         <Logo />
       </header>
       <main>
-        <Form />
-        {/* <Count /> */}
+        <Main />
       </main>
-      <Pads />
     </>
   );
 };
