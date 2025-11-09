@@ -2,24 +2,28 @@ import { useState } from "react";
 import { Recipe } from "./Recipe";
 import { RecipeReady } from "./RecipeReady";
 import { IngredientsList } from "./IngredientsList";
-import { getRecipeFromOpenAI } from "../api/openai";
+import { getRecipeFromHF } from "../api/huggingfaceKiwi";
+import { RealRecipe } from "./RealRecipe";
 
 export const Main = () => {
   const [ingredients, setIngredients] = useState([]);
   const [recipeShowen, setRecipeShowen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [recipe, setRecipe] = useState('')
+  const [recipe, setRecipe] = useState("");
 
-const getRecipe = async () => {
-  try {
-    const data = await getRecipeFromOpenAI(ingredients);
-    setRecipe(data);
-    setRecipeShowen(true);
-  } catch (err) {
-    console.error(err);
-  }
-};
+  const handleRecipe = async () => {
+    try {
+      setIsLoading(prev => !prev);
+      const data = await getRecipeFromHF(ingredients);
+      setIsLoading(prev => !prev);
 
+      setRecipe(data);
+      setRecipeShowen(true);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   const addIngredient = (formData) => {
     const ingredient = formData.get("ingredient");
@@ -47,10 +51,12 @@ const getRecipe = async () => {
 
       {ingredients.length > 0 && <IngredientsList ingredients={ingredients} />}
 
+      {ingredients.length > 3 && (
+        <RecipeReady getRecipe={handleRecipe} />
+      )}
 
-      {ingredients.length > 3 && <RecipeReady showRecipe={setRecipeShowen} getRecipe={getRecipe} recipe={recipe}/>}
-
-      {recipeShowen && <Recipe />}
+      {/* {recipeShowen && <Recipe />} */}
+      {isLoading ? "Generating" :  recipeShowen && <RealRecipe recipe={recipe}   />}
     </div>
   );
 };
