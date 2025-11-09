@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Recipe } from "./Recipe";
 import { RecipeReady } from "./RecipeReady";
 import { IngredientsList } from "./IngredientsList";
 import { getRecipeFromHF } from "../api/huggingfaceKiwi";
-import { RealRecipe } from "./RealRecipe";
+import { Recipe } from "./Recipe";
 
 export const Main = () => {
   const [ingredients, setIngredients] = useState([]);
@@ -14,9 +13,9 @@ export const Main = () => {
 
   const handleRecipe = async () => {
     try {
-      setIsLoading(prev => !prev);
+      setIsLoading((prev) => !prev);
       const data = await getRecipeFromHF(ingredients);
-      setIsLoading(prev => !prev);
+      setIsLoading((prev) => !prev);
 
       setRecipe(data);
       setRecipeShowen(true);
@@ -25,6 +24,11 @@ export const Main = () => {
     }
   };
 
+  const resetPage = () => {
+    setIngredients([]);
+    setRecipe("");
+    setRecipeShowen(false);
+  };
   const addIngredient = (formData) => {
     const ingredient = formData.get("ingredient");
     setIngredients((prev) => Array.from(new Set([...prev, ingredient])));
@@ -48,15 +52,22 @@ export const Main = () => {
           + Add Ingredient
         </button>
       </form>
-
+      {recipe ? (
+        <button
+          onClick={resetPage}
+          className="mt-4 bg-black text-white font-bold px-8 py-3 rounded-lg shadow-md border border-gray-300 hover:bg-gray-900 hover:scale-105 transition-all duration-200"
+        >
+          Reset All
+        </button>
+      ) : (
+        ""
+      )}
       {ingredients.length > 0 && <IngredientsList ingredients={ingredients} />}
 
-      {ingredients.length > 3 && (
-        <RecipeReady getRecipe={handleRecipe} />
-      )}
+      {ingredients.length > 3 && <RecipeReady getRecipe={handleRecipe} />}
 
       {/* {recipeShowen && <Recipe />} */}
-      {isLoading ? "Generating" :  recipeShowen && <RealRecipe recipe={recipe}   />}
+      {isLoading ? "Generating" : recipeShowen && <Recipe recipe={recipe} />}
     </div>
   );
 };
