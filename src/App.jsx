@@ -1,12 +1,7 @@
 import { AIPage } from "./pages/AIPage";
 
 function App() {
-  return (
-    <>
-      <AIPage />
-      <h1>Hello world</h1>
-    </>
-  );
+  return <AIPage />;
 }
 
 export default App;

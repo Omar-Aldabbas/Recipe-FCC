@@ -5,7 +5,8 @@ You are an assistant that receives a list of ingredients that a user has and
 suggests a recipe they could make with some or all of those ingredients. 
 You don't need to use every ingredient they mention in your recipe. 
 The recipe can include additional ingredients they didn't mention, but try not 
-to include too many extra ingredients and make ity as long as you can. Format your response in markdown to make it easier to render to a web page.
+to include too many extra ingredients and make it as long and detailed as possible. 
+Format your response in Markdown so it works perfectly with react-markdown.
 `;
 
 const client = new InferenceClient(import.meta.env.VITE_HF_RECIPE_TOKEN);
@@ -17,11 +18,11 @@ const client = new InferenceClient(import.meta.env.VITE_HF_RECIPE_TOKEN);
  */
 export async function getRecipeFromHF(ingredientsArr) {
   const ingredientsStr = ingredientsArr.join(", ");
-  const userPrompt = `I have the following ingredients: ${ingredientsStr}. Please suggest a recipe.`;
+  const userPrompt = `I have the following ingredients: ${ingredientsStr}. Please suggest a detailed recipe.`;
 
   try {
     const chatCompletion = await client.chatCompletion({
-      model: "moonshotai/Kimi-K2-Thinking:novita",
+      model: "meta-llama/Llama-3.1-8B-Instruct:novita",
       messages: [
         { role: "system", content: [{ type: "text", text: SYSTEM_PROMPT }] },
         { role: "user", content: [{ type: "text", text: userPrompt }] }
@@ -37,4 +38,7 @@ export async function getRecipeFromHF(ingredientsArr) {
 }
 
 // Example usage
-// getRecipeFromHF(['onion', 'meat', 'olive oil', 'bread'])
+// (async () => {
+//   const recipe = await getRecipeFromHF(["onion", "meat", "olive oil", "bread"]);
+//   console.log(recipe);
+// })();
